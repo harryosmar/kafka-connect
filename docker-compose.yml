@@ -86,12 +86,12 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect-avro
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/etc/kafka-connect/jars"
       CONNECT_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
     volumes:
       - ./sink/files:/tmp/files
-      - ./tmp/quickstart/file:/tmp/quickstart
+      - ./drivers/mysql-connector-java-5.1.37-bin.jar:/usr/share/java/kafka-connect-jdbc/mysql-connector-java-5.1.37-bin.jar
   quickstart-mysql:
     container_name: quickstart-mysql
     hostname: quickstart-mysql
