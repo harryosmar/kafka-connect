@@ -1,3 +1,5 @@
+![sourceJDBCMySQL-sinkFile](https://raw.githubusercontent.com/harryosmar/kafka-connect/master/doc/kafka-connect-from-jdbc-mysql-source-to-sink-file.jpg)
+
 ## How to start
 
 ### 1. Build and start the containers
