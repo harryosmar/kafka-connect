@@ -212,3 +212,4 @@ tail -f /var/lib/mysql/quickstart-mysql.log
 - https://docs.confluent.io/5.0.0/installation/docker/docs/installation/connect-avro-jdbc.html
 - https://www.confluent.io/blog/simplest-useful-kafka-connect-data-pipeline-world-thereabouts-part-1/
 - [Monitoring Connectors](https://docs.confluent.io/current/connect/managing/monitoring.html)
+- [Debezium MySQL CDC Connector](https://www.confluent.io/connector/debezium-mysql-cdc-connector/)

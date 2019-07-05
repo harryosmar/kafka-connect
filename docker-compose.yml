@@ -9,7 +9,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-
   broker:
     # "`-._,-'"`-._,-'"`-._,-'"`-._,-'"`-._,-'"`-._,-'"`-._,-'"`-._,-'"`-._,-
     # An important note about accessing Kafka from clients on other machines: 
@@ -86,12 +85,12 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
       CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect-avro
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/etc/kafka-connect/jars"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
     volumes:
       - ./sink/files:/tmp/files
-      - ./drivers/mysql-connector-java-5.1.37-bin.jar:/usr/share/java/kafka-connect-jdbc/mysql-connector-java-5.1.37-bin.jar
+      - ./drivers/mysql-connector-java-5.1.37-bin.jar:/usr/share/java/kafka/mysql-connector-java-5.1.37-bin.jar
   quickstart-mysql:
     container_name: quickstart-mysql
     hostname: quickstart-mysql
@@ -106,7 +105,3 @@ services:
     ports:
       - "3306:3306"
     # command: "bash -c 'mysql -u confluent -pconfluent < /tmp/db_setup.sql'"
-
-
-    
-
