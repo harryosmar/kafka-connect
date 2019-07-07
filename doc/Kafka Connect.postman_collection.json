@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "9c6343a2-26be-40eb-abb2-31a1695f1157",
+		"name": "Kafka Connect",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/connectors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{domain}}/connectors",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"connectors"
+					]
+				},
+				"description": "list of connector"
+			},
+			"response": []
+		},
+		{
+			"name": "connector-plugins",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{domain}}/connector-plugins",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"connector-plugins"
+					]
+				},
+				"description": "list of connector plugins available"
+			},
+			"response": []
+		},
+		{
+			"name": "/connectors JDBC Source",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"quickstart-jdbc-source\",\n  \"config\": {\n    \"connector.class\": \"io.confluent.connect.jdbc.JdbcSourceConnector\",\n    \"tasks.max\": 1,\n    \"connection.url\": \"jdbc:mysql://quickstart-mysql:3306/connect_test\",\n    \"connection.user\": \"root\",\n    \"connection.password\": \"confluent\",\n    \"mode\": \"timestamp\",\n    \"timestamp.column.name\": \"modified\",\n    \"topic.prefix\": \"quickstart-jdbc-\",\n    \"poll.interval.ms\": 1000\n  }\n}"
+				},
+				"url": {
+					"raw": "{{domain}}/connectors",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"connectors"
+					]
+				},
+				"description": "Add new JDBC MySQL source connector"
+			},
+			"response": []
+		},
+		{
+			"name": "/connectors File Sink",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"quickstart-avro-file-sink\",\n  \"config\": {\n    \"connector.class\": \"org.apache.kafka.connect.file.FileStreamSinkConnector\",\n    \"tasks.max\": \"1\",\n    \"topics\": \"quickstart-jdbc-test\",\n    \"file\": \"/tmp/files/jdbc-output.txt\"\n  }\n}"
+				},
+				"url": {
+					"raw": "{{domain}}/connectors",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"connectors"
+					]
+				},
+				"description": "Add new file sink connector"
+			},
+			"response": []
+		}
+	]
+}

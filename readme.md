@@ -1,4 +1,4 @@
-![sourceJDBCMySQL-sinkFile](https://raw.githubusercontent.com/harryosmar/kafka-connect/master/doc/kafka-connect-from-jdbc-mysql-source-to-sink-file.jpg)
+![sourceJDBCMySQL-sinkFile](https://raw.githubusercontent.com/harryosmar/kafka-connect/master/doc/kafka-connect-from-jdbc-mysql-source-to-sink-file-v2.jpg)
 
 ## How to start
 
@@ -54,9 +54,22 @@ curl -s -X GET http://localhost:8083/connectors
 
 ```
 curl -X POST \
-  -H "Content-Type: application/json" \
-  --data '{ "name": "quickstart-jdbc-source", "config": { "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector", "tasks.max": 1, "connection.url": "jdbc:mysql://quickstart-mysql:3306/connect_test?user=root&password=confluent", "mode": "timestamp", "timestamp.column.name": "modified", "topic.prefix": "quickstart-jdbc-", "poll.interval.ms": 1000 } }' \
-  http://localhost:8083/connectors
+  http://localhost:8083/connectors \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "quickstart-jdbc-source",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "tasks.max": 1,
+    "connection.url": "jdbc:mysql://quickstart-mysql:3306/connect_test",
+    "connection.user": "root",
+    "connection.password": "confluent",
+    "mode": "timestamp",
+    "timestamp.column.name": "modified",
+    "topic.prefix": "quickstart-jdbc-",
+    "poll.interval.ms": 1000
+  }
+}'
 ```
 
 output should be
@@ -87,6 +100,8 @@ WHERE `connect_test`.`test`.`modified` > ?
 	AND `connect_test`.`test`.`modified` < ? 
 ORDER BY `connect_test`.`test`.`modified` ASC
 ```
+
+![sourceJDBCMySQL-sinkFile](https://raw.githubusercontent.com/harryosmar/kafka-connect/master/doc/mysql-db.png)
 
 ### 7. Check if the connector JDBC source - topic has been created
 
@@ -127,9 +142,18 @@ curl -s -X GET http://localhost:8083/connectors/quickstart-jdbc-source/status
 ### 9. Create connector file sink using topic quickstart-jdbc-test
 
 ```
-curl -X POST -H "Content-Type: application/json" \
-  --data '{"name": "quickstart-avro-file-sink", "config": {"connector.class":"org.apache.kafka.connect.file.FileStreamSinkConnector", "tasks.max":"1", "topics":"quickstart-jdbc-test", "file": "/tmp/files/jdbc-output.txt"}}' \
-  http://localhost:8083/connectors
+curl -X POST \
+  http://localhost:8083/connectors \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "quickstart-avro-file-sink",
+  "config": {
+    "connector.class": "org.apache.kafka.connect.file.FileStreamSinkConnector",
+    "tasks.max": "1",
+    "topics": "quickstart-jdbc-test",
+    "file": "/tmp/files/jdbc-output.txt"
+  }
+}'
 ```
 
 ```json
@@ -174,21 +198,50 @@ curl -s -X GET http://localhost:8083/connectors/quickstart-avro-file-sink/status
 }
 ```
 
-### 11. Testing update data in source DB then check the sink files
+### 11. Create sink to elastic search
+
+```
+curl -X POST \
+  http://localhost:8083/connectors \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "quickstart-es-sink",
+  "config": {
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter.schema.registry.url": "http://schema-registry:8081",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "connection.url": "http://quickstart-elasticsearch:9200",
+    "type.name": "type.name=kafka-connect",
+    "topics": "quickstart-jdbc-test",
+    "key.ignore": "true"
+  }
+}'
+```
+
+### 12. Testing update data in source DB then check the sink files and elasticsearch
 
 While listen for changes on sink file, insert new record to table `test` 
 ```
 tail -f ./sink/files/jdbc-output.txt
 ```
 
+![sourceJDBCMySQL-sinkFile](https://raw.githubusercontent.com/harryosmar/kafka-connect/master/doc/tail-file-sink.png)
+
+
 ```
-INSERT INTO test (name, email, department) VALUES ('archie', 'archie@abc.com', 'sales');
+INSERT INTO test (name, email, department) VALUES ('sheldon', 'sheldon@bigbang.com', 'physicist');
 ```
 
 expected new line in file `./sink/files/jdbc-output.txt`
 ```
-Struct{id=11,name=archie,email=archie@abc.com,department=sales,modified=Thu Jul 04 11:47:27 UTC 2019}
+Struct{id=11,name=sheldon,email=sheldon@bigbang.com,department=physicist,modified=Sun Jul 07 16:58:35 UTC 2019}
 ```
+
+expected new documment in elastic-search, check kibana dashboard page
+
+![sourceJDBCMySQL-sinkFile](https://raw.githubusercontent.com/harryosmar/kafka-connect/master/doc/kibana.png)
 
 
 ## Notes
@@ -210,6 +263,8 @@ tail -f /var/lib/mysql/quickstart-mysql.log
 
 - https://rmoff.net/2018/08/02/kafka-listeners-explained/
 - https://docs.confluent.io/5.0.0/installation/docker/docs/installation/connect-avro-jdbc.html
-- https://www.confluent.io/blog/simplest-useful-kafka-connect-data-pipeline-world-thereabouts-part-1/
+- simplest-useful-kafka-connect-data-pipeline-world-thereabouts
+  - [part 1](https://www.confluent.io/blog/simplest-useful-kafka-connect-data-pipeline-world-thereabouts-part-1/)
+  - [part 2](https://www.confluent.io/blog/the-simplest-useful-kafka-connect-data-pipeline-in-the-world-or-thereabouts-part-2/)
 - [Monitoring Connectors](https://docs.confluent.io/current/connect/managing/monitoring.html)
 - [Debezium MySQL CDC Connector](https://www.confluent.io/connector/debezium-mysql-cdc-connector/)
