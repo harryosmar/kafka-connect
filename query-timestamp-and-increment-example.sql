@@ -1,3 +1,23 @@
+## Connector config
+
+```json
+{
+	"connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+	"tasks.max": 1,
+	"connection.url": "jdbc:sqlserver://my-mssql:1433;DatabaseName=test_db",
+	"connection.user": "sa",
+	"connection.password": "EmergingSystems1",
+	"mode": "timestamp+incrementing",
+	"timestamp.column.name": "modified",
+	"incrementing.column.name": "id",
+	"topic.prefix": "quickstart-jdbc-mssql-query",
+	"poll.interval.ms": 1000,
+	"query": "SELECT TOP 1 id AS sink_id, id, email, department, modified FROM test_db.dbo.test"
+}
+```
+
+## query
+
 ### 1st second
 
 ```sql
