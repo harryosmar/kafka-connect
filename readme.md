@@ -268,3 +268,5 @@ tail -f /var/lib/mysql/quickstart-mysql.log
   - [part 2](https://www.confluent.io/blog/the-simplest-useful-kafka-connect-data-pipeline-in-the-world-or-thereabouts-part-2/)
 - [Monitoring Connectors](https://docs.confluent.io/current/connect/managing/monitoring.html)
 - [Debezium MySQL CDC Connector](https://www.confluent.io/connector/debezium-mysql-cdc-connector/)
+- https://www.confluent.io/blog/kafka-connect-deep-dive-jdbc-source-connector
+- https://docs.confluent.io/current/connect/kafka-connect-jdbc/index.html#installing-jdbc-drivers

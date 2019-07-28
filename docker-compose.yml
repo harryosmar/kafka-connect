@@ -91,6 +91,7 @@ services:
     volumes:
       - ./sink/files:/tmp/files
       - ./drivers/mysql-connector-java-5.1.37-bin.jar:/usr/share/java/kafka/mysql-connector-java-5.1.37-bin.jar
+      - ./drivers/sqljdbc4.jar:/usr/share/java/kafka/sqljdbc4.jar
   quickstart-mysql:
     container_name: quickstart-mysql
     hostname: quickstart-mysql
@@ -105,16 +106,24 @@ services:
     ports:
       - "3306:3306"
     # command: "bash -c 'mysql -u confluent -pconfluent < /tmp/db_setup.sql'"
-  quickstart-elasticsearch:
-    container_name: "quickstart-elasticsearch"
-    image: "elasticsearch:6.5.4"
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-  quickstart-kibana:
-    container_name: "quickstart-kibana"
-    image: "kibana:6.5.4"
-    environment:
-      ELASTICSEARCH_URL: http://quickstart-elasticsearch:9200
-    ports:
-      - "5601:5601"
+  mssql:
+   image: 'microsoft/mssql-server-linux:2017-latest'
+   container_name: my-mssql
+   ports:
+   - '1433:1433'
+   environment:
+   - ACCEPT_EULA=Y
+   - 'SA_PASSWORD=EmergingSystems1'
+  # quickstart-elasticsearch:
+  #  container_name: "quickstart-elasticsearch"
+  #  image: "elasticsearch:6.5.4"
+  #  ports:
+  #    - "9200:9200"
+  #    - "9300:9300"
+  # quickstart-kibana:
+  #  container_name: "quickstart-kibana"
+  #  image: "kibana:6.5.4"
+  #  environment:
+  #    ELASTICSEARCH_URL: http://quickstart-elasticsearch:9200
+  #  ports:
+  #   - "5601:5601"
