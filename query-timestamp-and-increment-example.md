@@ -69,3 +69,17 @@ WHERE `modified` < '2019-07-28 16:31:55'
 	) 
 ORDER BY `modified`,`id` ASC
 ```
+
+### 5th, 6th, ...th
+
+```sql
+SELECT TOP 1 id AS sink_id, id, email, department, modified 
+FROM test 
+WHERE `modified` < '2019-07-28 16:31:55' 
+	AND (
+			(`modified` = '2019-07-28 16:31:05' AND `id` > PREVIOUS_OFFSET + 1) 
+			OR `modified` > '2019-07-28 16:31:05'
+	) 
+ORDER BY `modified`,`id` ASC
+```
+
