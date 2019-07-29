@@ -16,7 +16,7 @@
 }
 ```
 
-## query
+## HOw the connector query looks like ? when fetching the data from MSSQL Server
 
 ### 1st second
 
