@@ -16,6 +16,16 @@
 }
 ```
 
+## Lesson learned
+
+Setting `batch.max.rows` will not be used in the SQL query.
+
+The setting can be used to limit the amount of data buffered internally in the connector.
+
+It could be, we use `SELECT TOP 1000` in the query. But we want to buffer 100 records to connector. Objective :
+- Only use `1` connection query with limit `1000` to the Database, instead of `10` connections with limit `100` (10 * 100).
+- Do not overload the payload data for the kafka connector, limit it by default `100`
+
 ## HOw the connector query looks like ? when fetching the data from MSSQL Server
 
 ### 1st second
@@ -82,4 +92,5 @@ WHERE `modified` < '2019-07-28 16:31:55'
 	) 
 ORDER BY `modified`,`id` ASC
 ```
+
 
