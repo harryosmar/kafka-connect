@@ -26,7 +26,7 @@ eg : we can use `SELECT TOP 1000` in the query. But we want to buffer `100` reco
 - Only use `1` connection query with limit `1000` to the Database, instead of `10` connections with limit `100` (10 * 100).
 - Do not overload the payload data for the kafka connector, limit it by default `100`
 
-## HOw the connector query looks like ? when fetching the data from MSSQL Server
+## How the connector query looks like ? when fetching the data from MSSQL Server
 
 ### 1st second
 
